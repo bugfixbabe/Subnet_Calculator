@@ -186,7 +186,7 @@ Make sure you are using valid colon-hex notation. Compressed forms like `::1`, `
 
 ## Author
 
-**[Monica Geller]**
+**[Sukaina Seerat]**
 - Cisco NetAcad Network Basics Certified
 - GitHub: [https://github.com/bugfixbabe]
 - LinkedIn: [Your LinkedIn URL]
