@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subnet | IPv4 &amp; IPv6 Calculator</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Code+Pro:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div class="page-wrap">
+
+    <!-- ═══════════════ HEADER ═══════════════ -->
+    <header class="site-header">
+      <div class="header-top">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <rect x="1.5" y="1.5" width="14" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+              <rect x="20.5" y="1.5" width="14" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+              <rect x="1.5" y="20.5" width="14" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/>
+              <rect x="20.5" y="20.5" width="14" height="14" rx="2.5" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="27.5" cy="27.5" r="4" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Subnet</span>
+            <span class="brand-tag">IPv4 &amp; IPv6</span>
+          </div>
+        </div>
+        <div class="header-meta">
+          <div class="meta-chip">
+            <span class="chip-label">Total Calculations</span>
+            <span class="chip-value" id="calc-count">0</span>
+          </div>
+          <div class="meta-chip">
+            <span class="chip-label">Status</span>
+            <span class="chip-value status-live">● Live</span>
+          </div>
+        </div>
+      </div>
+      <div class="header-hero">
+        <h1 class="hero-title">Network Subnet Calculator</h1>
+        <p class="hero-sub">Professional IPv4 &amp; IPv6 network analysis — calculate subnets, host ranges, binary representations and address classifications in seconds.</p>
+      </div>
+    </header>
+
+    <!-- ═══════════════ PROTOCOL TABS ═══════════════ -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" id="tab-v4" onclick="switchTab('v4')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <span>IPv4</span>
+        <span class="tab-pill">32-bit</span>
+      </button>
+      <button class="tab-btn" id="tab-v6" onclick="switchTab('v6')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        <span>IPv6</span>
+        <span class="tab-pill">128-bit</span>
+      </button>
+    </nav>
+
+    <!-- ═══════════════ IPv4 PANEL ═══════════════ -->
+    <section id="panel-v4" class="proto-panel active">
+
+      <!-- Input Card -->
+      <div class="card input-card">
+        <div class="card-head">
+          <div class="card-head-left">
+            <div class="card-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <h2 class="card-title">Input Parameters</h2>
+          </div>
+          <span class="card-badge">IPv4</span>
+        </div>
+
+        <div class="input-row-grid">
+          <div class="field-group">
+            <label class="field-label" for="v4-ip">IP Address</label>
+            <input type="text" id="v4-ip" class="field-input" placeholder="e.g. 192.168.1.0" value="192.168.1.0" autocomplete="off" />
+            <span class="field-hint">Enter a valid IPv4 address</span>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="v4-cidr-num">CIDR Prefix Length</label>
+            <div class="slider-group">
+              <span class="cidr-slash">/</span>
+              <input type="range" id="v4-slider" class="range-input" min="0" max="32" value="24" oninput="syncV4(this.value,'slider')" />
+              <input type="number" id="v4-cidr-num" class="field-input cidr-num" min="0" max="32" value="24" oninput="syncV4(this.value,'num')" />
+            </div>
+            <span class="field-hint">Drag slider or type CIDR value (0 – 32)</span>
+          </div>
+        </div>
+
+        <button class="calc-btn" onclick="calcV4()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          Calculate Network
+        </button>
+        <div id="v4-error" class="error-box" style="display:none"></div>
+      </div>
+
+      <!-- Results -->
+      <div id="v4-results" style="display:none">
+        <div class="results-header">
+          <h3 class="results-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Analysis Results
+          </h3>
+          <span class="results-badge" id="v4-cidr-badge">/24</span>
+        </div>
+        <div class="result-grid">
+
+          <!-- Card 1 -->
+          <div class="card result-card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
+                <h3 class="card-title">Network Details</h3>
+              </div>
+            </div>
+            <div class="result-rows">
+              <div class="rrow"><span class="rlabel">IP Address</span><span class="rvalue copyable" id="v4-ip-out"></span></div>
+              <div class="rrow accent"><span class="rlabel">Network Address</span><span class="rvalue copyable" id="v4-network"></span></div>
+              <div class="rrow accent"><span class="rlabel">Broadcast Address</span><span class="rvalue copyable" id="v4-broadcast"></span></div>
+              <div class="rrow"><span class="rlabel">Subnet Mask</span><span class="rvalue copyable" id="v4-mask"></span></div>
+              <div class="rrow"><span class="rlabel">Wildcard Mask</span><span class="rvalue copyable" id="v4-wildcard"></span></div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="card result-card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h3 class="card-title">Host Information</h3>
+              </div>
+            </div>
+            <div class="result-rows">
+              <div class="rrow accent"><span class="rlabel">First Usable Host</span><span class="rvalue copyable" id="v4-first"></span></div>
+              <div class="rrow accent"><span class="rlabel">Last Usable Host</span><span class="rvalue copyable" id="v4-last"></span></div>
+              <div class="rrow"><span class="rlabel">Total Addresses</span><span class="rvalue"><span class="pill pill-brown" id="v4-total"></span></span></div>
+              <div class="rrow"><span class="rlabel">Usable Hosts</span><span class="rvalue"><span class="pill pill-green" id="v4-usable"></span></span></div>
+            </div>
+            <div class="host-bar-wrap">
+              <div class="host-bar-labels">
+                <span>Host Utilization</span>
+                <span id="v4-pct">0%</span>
+              </div>
+              <div class="host-bar-track">
+                <div class="host-bar-fill" id="v4-bar"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="card result-card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                </div>
+                <h3 class="card-title">Binary Representation</h3>
+              </div>
+            </div>
+            <div class="result-rows">
+              <div class="rrow binary-row">
+                <span class="rlabel">IP Address (Binary)</span>
+                <div class="binary-box" id="v4-ip-bin"></div>
+              </div>
+              <div class="rrow binary-row">
+                <span class="rlabel">Subnet Mask (Binary)</span>
+                <div class="binary-box" id="v4-mask-bin"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="card result-card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                </div>
+                <h3 class="card-title">Classification</h3>
+              </div>
+            </div>
+            <div class="result-rows">
+              <div class="rrow"><span class="rlabel">IP Class</span><span class="rvalue"><span class="pill pill-amber" id="v4-class"></span></span></div>
+              <div class="rrow"><span class="rlabel">Network Type</span><span class="rvalue"><span class="pill pill-brown" id="v4-type"></span></span></div>
+              <div class="rrow"><span class="rlabel">CIDR Notation</span><span class="rvalue code-val" id="v4-cidr-full"></span></div>
+              <div class="rrow"><span class="rlabel">Host Bits</span><span class="rvalue code-val" id="v4-hostbits"></span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ IPv6 PANEL ═══════════════ -->
+    <section id="panel-v6" class="proto-panel">
+
+      <!-- Input Card -->
+      <div class="card input-card">
+        <div class="card-head">
+          <div class="card-head-left">
+            <div class="card-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <h2 class="card-title">Input Parameters</h2>
+          </div>
+          <span class="card-badge">IPv6</span>
+        </div>
+
+        <div class="input-row-grid">
+          <div class="field-group">
+            <label class="field-label" for="v6-ip">IPv6 Address</label>
+            <input type="text" id="v6-ip" class="field-input v6-input" placeholder="e.g. 2001:db8::" value="2001:db8::" autocomplete="off" />
+            <span class="field-hint">Full or compressed IPv6 address (e.g. 2001:db8::1)</span>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="v6-prefix-num">Prefix Length</label>
+            <div class="slider-group">
+              <span class="cidr-slash">/</span>
+              <input type="range" id="v6-slider" class="range-input" min="0" max="128" value="64" oninput="syncV6(this.value,'slider')" />
+              <input type="number" id="v6-prefix-num" class="field-input cidr-num" min="0" max="128" value="64" oninput="syncV6(this.value,'num')" />
+            </div>
+            <span class="field-hint">Drag slider or type prefix length (0 – 128)</span>
+          </div>
+        </div>
+
+        <button class="calc-btn" onclick="calcV6()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          Calculate Network
+        </button>
+        <div id="v6-error" class="error-box" style="display:none"></div>
+      </div>
+
+      <!-- Results -->
+      <div id="v6-results" style="display:none">
+        <div class="results-header">
+          <h3 class="results-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Analysis Results
+          </h3>
+          <span class="results-badge" id="v6-prefix-badge">/64</span>
+        </div>
+        <div class="result-grid">
+
+          <!-- Card 1 -->
+          <div class="card result-card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/></svg>
+                </div>
+                <h3 class="card-title">Address Details</h3>
+              </div>
+            </div>
+            <div class="result-rows">
+              <div class="rrow"><span class="rlabel">Input Address</span><span class="rvalue copyable small-val" id="v6-input-out"></span></div>
+              <div class="rrow accent"><span class="rlabel">Expanded (Full)</span><span class="rvalue copyable small-val" id="v6-full"></span></div>
+              <div class="rrow accent"><span class="rlabel">Network Prefix</span><span class="rvalue copyable small-val" id="v6-network"></span></div>
+              <div class="rrow"><span class="rlabel">Prefix Mask</span><span class="rvalue copyable small-val" id="v6-mask"></span></div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="card result-card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                </div>
+                <h3 class="card-title">Address Range</h3>
+              </div>
+            </div>
+            <div class="result-rows">
+              <div class="rrow accent"><span class="rlabel">First Address</span><span class="rvalue copyable small-val" id="v6-first"></span></div>
+              <div class="rrow accent"><span class="rlabel">Last Address</span><span class="rvalue copyable small-val" id="v6-last"></span></div>
+              <div class="rrow"><span class="rlabel">Total Addresses</span><span class="rvalue"><span class="pill pill-brown" id="v6-total"></span></span></div>
+              <div class="rrow"><span class="rlabel">Prefix Length</span><span class="rvalue"><span class="pill pill-amber" id="v6-pfx-len"></span></span></div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="card result-card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+                </div>
+                <h3 class="card-title">Binary Prefix</h3>
+              </div>
+            </div>
+            <div class="result-rows">
+              <div class="rrow binary-row">
+                <span class="rlabel">First 64 Bits</span>
+                <div class="binary-box small-bin" id="v6-bin-hi"></div>
+              </div>
+              <div class="rrow binary-row">
+                <span class="rlabel">Last 64 Bits</span>
+                <div class="binary-box small-bin" id="v6-bin-lo"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="card result-card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></svg>
+                </div>
+                <h3 class="card-title">Classification</h3>
+              </div>
+            </div>
+            <div class="result-rows">
+              <div class="rrow"><span class="rlabel">Address Type</span><span class="rvalue"><span class="pill pill-amber" id="v6-type"></span></span></div>
+              <div class="rrow"><span class="rlabel">Scope</span><span class="rvalue"><span class="pill pill-brown" id="v6-scope"></span></span></div>
+              <div class="rrow"><span class="rlabel">CIDR Notation</span><span class="rvalue code-val small-val" id="v6-cidr-full"></span></div>
+              <div class="rrow"><span class="rlabel">Host Bits</span><span class="rvalue code-val" id="v6-hostbits"></span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════ FOOTER ═══════════════ -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="footer-name">Subnet</span>
+        </div>
+        <p class="footer-desc">Professional subnet calculator · IPv4 &amp; IPv6 · Cisco NetAcad Certified</p>
+        <div class="footer-links">
+          <a href="https://github.com/ScrambleR-H" class="flink">GitHub</a>
+          <span class="fsep">·</span>
+          <a href="#" class="flink">LinkedIn</a>
+          <span class="fsep">·</span>
+          <a href="README.md" class="flink" target="_blank">Documentation</a>
+        </div>
+        <p class="footer-copy">Subnetting is fundamental for efficient network design and IP address management.</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Copy Toast -->
+  <div id="toast" class="toast">✓ Copied to clipboard</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
